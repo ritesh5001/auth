@@ -2,16 +2,18 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../src/app');
 
-describe('POST /auth/register', () => {
+describe('POST /api/auth/register', () => {
   it('creates a user successfully', async () => {
     const res = await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')   
       .send({
         username: 'john_doe',
         email: 'john@example.com',
         password: 'Password123',
-        firstName: 'John',
-        lastName: 'Doe'
+        fullName: {                 
+          firstName: 'John',
+          lastName: 'Doe'
+        }
       });
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty('id');
