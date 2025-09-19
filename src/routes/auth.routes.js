@@ -5,4 +5,6 @@ const router = express.Router();
 
 router.post('/register',validators.registerUserValidations,authController.registerUser);
 
+
+
 module.exports = router;
