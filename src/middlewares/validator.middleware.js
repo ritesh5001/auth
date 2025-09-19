@@ -20,16 +20,19 @@ const registerUserValidations = [
     body("password")
         .isLength({ min: 6 })
         .withMessage("Password Must be at least 6 characters long"),
-    body("fullName.firstName")
-        .isString()
-        .withMessage("First name must be a string")
-        .notEmpty()
-        .withMessage("First name is required"),
-    body("fullName.lastName")
-        .isString()
-        .withMessage("Last name must be a String")
-        .notEmpty()
-        .withMessage("Last Name is required"),
+    // fullName can be provided either nested or as top-level fields; make them optional validations
+    body("fullName.firstName").optional()
+        .isString().withMessage("First name must be a string")
+        .notEmpty().withMessage("First name is required when provided"),
+    body("fullName.lastName").optional()
+        .isString().withMessage("Last name must be a String")
+        .notEmpty().withMessage("Last Name is required when provided"),
+    body("firstName").optional()
+        .isString().withMessage("First name must be a string")
+        .notEmpty().withMessage("First name is required when provided"),
+    body("lastName").optional()
+        .isString().withMessage("Last name must be a String")
+        .notEmpty().withMessage("Last Name is required when provided"),
     respondWithValidationErrors
 ]
 

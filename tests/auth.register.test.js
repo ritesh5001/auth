@@ -22,14 +22,14 @@ describe('POST /api/auth/register', () => {
 
   it('rejects missing fields', async () => {
     const res = await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ username: 'a' });
     expect(res.statusCode).toBe(400);
   });
 
   it('prevents duplicate users', async () => {
     await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({
         username: 'dup',
         email: 'dup@example.com',
@@ -39,7 +39,7 @@ describe('POST /api/auth/register', () => {
       });
 
     const res = await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({
         username: 'dup',
         email: 'dup@example.com',

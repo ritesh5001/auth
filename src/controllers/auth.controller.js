@@ -4,7 +4,12 @@ const jwt = require('jsonwebtoken');
 
 
 async function registerUser(req,res){
-    const {username,email,password,fullName:{firstName,lastName}} = req.body;
+
+    try{
+
+    const { username, email, password } = req.body;
+    const firstName = req.body?.fullName?.firstName ?? req.body.firstName;
+    const lastName = req.body?.fullName?.lastName ?? req.body.lastName;
 
     const isUserAlreadyExists = await userModel.findOne({
         $or:[
@@ -35,11 +40,36 @@ async function registerUser(req,res){
          role:user.role
     },process.env.JWT_SECRET,{ expiresIn:'1d'})
 
-    res,cookie("token",token,{
+    res.cookie("token",token,{
         httpOnly:true,
         secure:true,
         maxAge: 24*60*60*1000,
     })
+
+    res.status(201).json({
+        message:"user registered successfully",
+        id: user._id,
+        username: user.username,
+        user: {
+            id: user._id,
+            username:user.username,
+            email:user.email,
+            fullName:user.fullName,
+            role:user.role,
+            address:user.address
+        }
+    })}
+
+    catch(err) {
+        console.log("Error in register User", err);
+        
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: 'validation error', errors: err.errors });
+        }
+        res.status(500).json({message:"internal server error"});
+    }
+
+
 }
 
 
