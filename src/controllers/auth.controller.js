@@ -1,6 +1,7 @@
 const userModel = require('../models/user.model');
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
+const redis = require('../db/redis');
 
 
 async function registerUser(req, res) {
@@ -125,6 +126,8 @@ async function loginUser(req, res) {
     }
 }
 
+
+
 async function getCurrentUser(req, res){
     try {
         return res.status(200).json({
@@ -136,9 +139,31 @@ async function getCurrentUser(req, res){
     }
 }
 
+async function logoutUser(req, res) {
+    try {
+        const token = req.cookies.token;
+        if(token){
+            await redis.set(`blacklist:${token}`,'true','EX',24*60*60) // Set token in redis with 1 day expiry
+        }
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+        });
+        return res.status(200).json({ message: 'Logged out successfully' });
+    } catch (err) {
+        console.log('Error in logoutUser:', err);
+        // Even if Redis fails, we should still clear the cookie
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+        });
+        return res.status(200).json({ message: 'Logged out successfully' });
+    }
+}
 
 module.exports = {
     registerUser,
     loginUser,
-    getCurrentUser
+    getCurrentUser,
+    logoutUser
 }
