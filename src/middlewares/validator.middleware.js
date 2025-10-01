@@ -59,5 +59,19 @@ const loginUserValidations = [
 
 module.exports = {
     registerUserValidations,
-    loginUserValidations
+    loginUserValidations,
+    addAddressValidations: [
+        body('street').isString().notEmpty().withMessage('street is required'),
+        body('city').isString().notEmpty().withMessage('city is required'),
+        body('state').isString().notEmpty().withMessage('state is required'),
+        body('country').isString().notEmpty().withMessage('country is required'),
+        body('pincode')
+            .isString().withMessage('pincode must be a string')
+            .matches(/^\d{6}$/).withMessage('pincode must be 6 digits'),
+        body('phone')
+            .isString().withMessage('phone must be a string')
+            .matches(/^\d{10}$/).withMessage('phone must be 10 digits'),
+        body('isDefault').optional().isBoolean().withMessage('isDefault must be boolean'),
+        respondWithValidationErrors
+    ]
 }

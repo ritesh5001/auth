@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const redis = require('../db/redis');
 
-
 async function registerUser(req, res) {
 
     try {
@@ -161,9 +160,25 @@ async function logoutUser(req, res) {
     }
 }
 
+async function getUserAddresses(req, res) {
+    
+    const id = req.user.id;
+
+    const user = await userModel.findById(id).select('address');
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    return res.status(200).json({
+        message: 'User addresses fetched successfully',
+        addresses: user.address
+    })
+}
+
 module.exports = {
     registerUser,
     loginUser,
     getCurrentUser,
-    logoutUser
+    logoutUser,
+    getUserAddresses
 }

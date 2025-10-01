@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
 
 const addressSchema = new mongoose.Schema({
-    street: String,
-    city: String,
-    state: String,
-    zip: String,
-    country: String
-})
+    street: { type: String },
+    city: { type: String },
+    state: { type: String },
+    country: { type: String },
+    zip: { type: String }, // legacy
+    pincode: { type: String },
+    phone: { type: String },
+    isDefault: { type: Boolean, default: false }
+});
 
 const userSchema = new mongoose.Schema({
     username: {
