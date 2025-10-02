@@ -7,7 +7,6 @@ const addressSchema = new mongoose.Schema({
     country: { type: String },
     zip: { type: String }, // legacy
     pincode: { type: String },
-    phone: { type: String },
     isDefault: { type: Boolean, default: false }
 });
 

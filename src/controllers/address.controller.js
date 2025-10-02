@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const userModel = require('../models/user.model');
 
 // Get addresses for current user
-async function getMyAddresses(req, res) {
+async function getUserAddresses(req, res) {
   try {
     const userId = req.user.id;
     const user = await userModel.findById(userId).lean();
@@ -10,16 +10,16 @@ async function getMyAddresses(req, res) {
     const addresses = user.address || [];
     return res.status(200).json({ addresses });
   } catch (err) {
-    console.error('getMyAddresses error:', err);
+    console.error('getUserAddresses error:', err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 }
 
 // Add address for current user
-async function addMyAddress(req, res) {
+async function addUserAddresses(req, res) {
   try {
     const userId = req.user.id;
-    const { street, city, state, country, pincode, phone, isDefault } = req.body;
+  const { street, city, state, country, pincode, isDefault } = req.body;
 
     const user = await userModel.findById(userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -32,10 +32,7 @@ async function addMyAddress(req, res) {
     // If this is the first address, default to isDefault true unless explicitly false
     const willBeDefault = isDefault === true || user.address.length === 0;
 
-    const address = {
-      street, city, state, country, pincode, phone,
-      isDefault: willBeDefault,
-    };
+    const address = { street, city, state, country, pincode, isDefault: willBeDefault };
 
     user.address.push(address);
     await user.save();
@@ -43,13 +40,13 @@ async function addMyAddress(req, res) {
     const created = user.address[user.address.length - 1];
     return res.status(201).json({ message: 'Address added', address: created });
   } catch (err) {
-    console.error('addMyAddress error:', err);
+    console.error('addUserAddresses error:', err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 }
 
 // Delete address for current user
-async function deleteMyAddress(req, res) {
+async function deleteUserAddress(req, res) {
   try {
     const userId = req.user.id;
     const { addressId } = req.params;
@@ -71,13 +68,13 @@ async function deleteMyAddress(req, res) {
 
     return res.status(200).json({ message: 'Address removed' });
   } catch (err) {
-    console.error('deleteMyAddress error:', err);
+    console.error('deleteUserAddress error:', err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 }
 
 module.exports = {
-  getMyAddresses,
-  addMyAddress,
-  deleteMyAddress,
+  getUserAddresses,
+  addUserAddresses,
+  deleteUserAddress,
 };

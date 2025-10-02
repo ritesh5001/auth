@@ -175,6 +175,27 @@ async function getUserAddresses(req, res) {
     })
 }
 
+async function addUserAddress(req, res){
+    const id = req.user.id;
+
+    const{ street, city, state, country, pincode, isDefault } = req.body;
+
+    const user = await userModel.findOneAndUpdate({ _id: id }, {
+        $push: {
+            address: { street, city, state, country, pincode, isDefault }
+        }
+    }, { new: true });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(201).json({
+        message: 'Address added successfully',
+        address: user.address[user.address.length - 1] 
+    })
+}
+
 module.exports = {
     registerUser,
     loginUser,

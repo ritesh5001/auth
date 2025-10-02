@@ -5,7 +5,7 @@ const app = require('../src/app');
 // - GET    /api/auth/user/me/addresses               -> returns { addresses: Address[] }
 // - POST   /api/auth/user/me/addresses               -> body: address payload; returns { message, address }
 // - DELETE /api/auth/user/me/addresses/:addressId    -> returns { message }
-// Address shape assumption includes fields: street, city, state, country, pincode, phone, isDefault.
+// Address shape assumption includes fields: street, city, state, country, pincode, isDefault.
 // We also assume only one address can be default at a time. Passing { isDefault: true } when adding
 // makes the new one default and removes default from the previous.
 
@@ -33,7 +33,6 @@ describe('Addresses API for current user', () => {
     state: 'London',
     country: 'UK',
     pincode: '560001', // 6 digits
-    phone: '9876543210', // 10 digits
     ...overrides,
   });
 
@@ -53,7 +52,7 @@ describe('Addresses API for current user', () => {
       expect(res.body.address).toHaveProperty('isDefault', true);
     });
 
-    it('validates pincode (must be 6 digits) and phone (must be 10 digits)', async () => {
+    it('validates pincode (must be 6 digits)', async () => {
       const agent = request.agent(app);
       await registerAndLogin(agent);
 
@@ -64,12 +63,6 @@ describe('Addresses API for current user', () => {
         .expect(400);
       expect(badPin.body).toBeDefined();
 
-      // Invalid phone
-      const badPhone = await agent
-        .post('/api/auth/user/me/addresses')
-        .send(validAddress({ phone: '123456789' })) // 9 digits
-        .expect(400);
-      expect(badPhone.body).toBeDefined();
     });
 
     it('marks a newly added address as default when isDefault=true and unsets previous default', async () => {
