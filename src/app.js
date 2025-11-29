@@ -1,14 +1,16 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-// const cors = require('cors')
-// const morgan = require('morgan')
+const express = require('express')
+const indexRoutes = require('./routes/index.routes')
+
 
 const app = express();
-app.use(express.json());
-app.use(cookieParser());
 
-// Routes
-const authRoutes = require('./routes/auth.routes');
-app.use('/api/auth', authRoutes);
+
+app.use((req,res,next)=>{
+    console.log("This is Middleware response")
+    next();
+})
+
+app.use('/', indexRoutes);
+
 
 module.exports = app;
