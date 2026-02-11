@@ -19,10 +19,8 @@
   },
   "homepage": "https://github.com/ritesh5001/auth#readme",
   "dependencies": {
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "jwt-token": "^1.0.9",
-    "mongoose": "^9.0.0"
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.0"
   }
 }
